@@ -63,8 +63,6 @@
 				<div class="col-sm-1"></div>
 
 			</div>
-			<hr>
-			<br>
 			<div align="center">
 				<button type="submit" style="width: 60%;" class="btn btn-primary">Submit</button>
 			</div>
