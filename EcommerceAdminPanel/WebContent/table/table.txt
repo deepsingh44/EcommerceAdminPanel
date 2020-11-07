@@ -1,0 +1,4 @@
+mysql> create database ecommerce;
+
+mysql> create table user (name varchar(30),email varchar(35) primary key,pass varchar(20),image varchar(50));
+
