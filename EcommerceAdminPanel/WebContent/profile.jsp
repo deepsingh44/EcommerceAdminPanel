@@ -4,7 +4,14 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#edtbtn").click(function() {
-			$("#right").css("display", "block");
+			var text = $("#edtbtn").text();
+			if (text == "Edit Profile") {
+				$("#right").css("display", "block");
+				$("#edtbtn").text("Close Profile");
+			} else {
+				$("#right").css("display", "none");
+				$("#edtbtn").text("Edit Profile");
+			}
 
 		});
 	});
@@ -45,17 +52,17 @@
 				<hr>
 				<div class="row">
 					<div class="col-sm-1"></div>
-					<div class="col-sm-4">
-						<div class="form-group">
-							<label for="email">Email address:</label> <input type="email"
+					<div class="col-sm-5">
+						<div class="form-group" align="left">
+							<label for="email">Full Name:</label> <input type="email"
 								class="form-control" id="email">
 						</div>
 					</div>
 
 					<div class="col-sm-2"></div>
 
-					<div class="col-sm-4">
-						<div class="form-group">
+					<div class="col-sm-5">
+						<div class="form-group" align="left">
 							<label for="email">Email address:</label> <input type="email"
 								class="form-control" id="email">
 						</div>
@@ -66,18 +73,18 @@
 
 				<div class="row">
 					<div class="col-sm-1"></div>
-					<div class="col-sm-4">
-						<div class="form-group">
-							<label for="email">Email address:</label> <input type="email"
+					<div class="col-sm-5">
+						<div class="form-group" align="left">
+							<label for="email">Password:</label> <input type="email"
 								class="form-control" id="email">
 						</div>
 					</div>
 
 					<div class="col-sm-2"></div>
 
-					<div class="col-sm-4">
-						<div class="form-group">
-							<label for="email">Email address:</label> <input type="email"
+					<div class="col-sm-5">
+						<div class="form-group" align="left">
+							<label for="email">Profile Image:</label> <input type="email"
 								class="form-control" id="email">
 						</div>
 					</div>
