@@ -51,5 +51,22 @@ public class UserDao {
 		}
 		return user;
 	}
+	
+	public int update(User user) {
+		int i = 0;
+		try (Connection con = Dao.getConnection();) {
+			PreparedStatement ps = con
+					.prepareStatement("update user set name=?, pass=?,image=? where email=?");
+			ps.setString(1, user.getName());
+			ps.setString(2, user.getPass());
+			ps.setString(3, user.getImage());
+			ps.setString(4, user.getEmail());
+
+			i = ps.executeUpdate();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return i;
+	}
 
 }

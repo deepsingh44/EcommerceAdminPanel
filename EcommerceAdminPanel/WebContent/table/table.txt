@@ -2,3 +2,4 @@ mysql> create database ecommerce;
 
 mysql> create table user (name varchar(30),email varchar(35) primary key,pass varchar(20),image varchar(50));
 
+CREATE TABLE product( id int NOT NULL AUTO_INCREMENT, name varchar(30) NOT NULL, category varchar(25), quantity int, price float, date varchar(25), image varchar(30), PRIMARY KEY (id));

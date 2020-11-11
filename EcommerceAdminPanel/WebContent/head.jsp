@@ -31,8 +31,8 @@
 						<li><a href="order.jsp">Orders</a></li>
 						<li><a href="profile.jsp">Profile</a></li>
 						<li><a href="addproduct.jsp">Add Product</a></li>
-						<li><a href="productlist.jsp">Product List</a></li>
-						<li><a href="logout">Logout</a></li>
+						<li><a href="product?opt=4">Product List</a></li>
+						<li><a href="user?opt=4">Logout</a></li>
 					</ul>
 				</p:when>
 			</p:choose>

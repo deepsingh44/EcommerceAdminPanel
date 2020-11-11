@@ -21,12 +21,17 @@
 			if (text == "") {
 
 			} else {
-
+				id = $(this).closest(".tr")
+				.find('td.id').text();
+				
 				if (text == "Edit") {
 					$('#myModal1').modal('show');
 				} else {
 					if (confirm("Are you sure you want to delete this product ?")) {
-						$.post("delete/"+ id,{},function(response) {
+						$.post("product",{
+							opt:2,
+							id:id,
+						},function(response) {
 							location.reload();
 						});
 					} else {
@@ -41,7 +46,10 @@
 </script>
 </head>
 <%@include file="head.jsp"%>
+<p:choose>
+<p:when test="${sessionScope.user ne null}">
 <div class="container-fluid" align="center">
+
 	<div
 		style="width: 85%; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); transition: 0.3s; height: 85vh;">
 		<div class="row">
@@ -70,8 +78,8 @@
 					<tr>
 						<th>ID</th>
 						<th>NAME</th>
-						<th>QUANTITY</th>
 						<th>PRICE</th>
+						<th>QUANTITY</th>
 						<th>DATE</th>
 						<th>Edit</th>
 						<th>Delete</th>
@@ -79,9 +87,11 @@
 				</thead>
 				<tbody>
 
-					<p:forEach items="1,2,3,4,5,6" var="product">
+					<p:forEach items="${sessionScope.products}" var="product">
 
-						<%-- <tr class="tr">
+						
+
+						<tr class="tr">
 							<td class="id">${product.id}</td>
 							<td class="name">${product.name}</td>
 							<td class="price">${product.price}</td>
@@ -91,20 +101,7 @@
 							<td>
 								<button class="btn btn-danger">Delete</button>
 							</td>
-						</tr> --%>
-
-
-						<tr class="tr">
-							<td class="id">${product}</td>
-							<td class="name">A</td>
-							<td class="price">123</td>
-							<td class="quantity">2</td>
-							<td class="date">2020/02/12</td>
-							<td><button class="btn btn-primary">Edit</button></td>
-							<td>
-								<button class="btn btn-danger">Delete</button>
-							</td>
-							<td><img src="images/default_user.png" width="30"
+							<td><img src="products/${product.mainimage}" width="30"
 								height="30"></td>
 						</tr>
 
@@ -190,3 +187,8 @@
 	</div>
 
 </div>
+</p:when>
+<p:otherwise>
+<p:redirect url="index.jsp"></p:redirect>
+</p:otherwise>
+</p:choose>

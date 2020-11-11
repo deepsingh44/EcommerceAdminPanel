@@ -41,6 +41,8 @@
 </script>
 </head>
 <%@include file="head.jsp"%>
+<p:choose>
+<p:when test="${sessionScope.user ne null}">
 <div class="container-fluid" align="center">
 	<div
 		style="width: 85%; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); transition: 0.3s; height: 85vh;">
@@ -190,3 +192,8 @@
 	</div>
 
 </div>
+</p:when>
+<p:otherwise>
+<p:redirect url="index.jsp"></p:redirect>
+</p:otherwise>
+</p:choose>
