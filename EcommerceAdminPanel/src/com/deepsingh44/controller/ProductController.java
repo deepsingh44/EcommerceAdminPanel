@@ -20,7 +20,7 @@ import com.deepsingh44.model.Product;
 
 @WebServlet("/product")
 public class ProductController extends HttpServlet {
-
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		process(req, resp);
@@ -43,7 +43,7 @@ public class ProductController extends HttpServlet {
 				deleteProduct(req, resp);
 				break;
 			case 3:
-				// updateProcess(req, resp);
+				updateProcess(req, resp);
 				break;
 			case 4:
 				getAllProducts(req, resp);
@@ -52,20 +52,104 @@ public class ProductController extends HttpServlet {
 		}
 	}
 
+	private void updateProcess(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String name = "", quantity = "", price = "", date = "", category = "", imagename = "",productid="";
+
+		String rootlocation=req.getServletContext().getRealPath("/");
+		File folder = new File(rootlocation, "products");
+		if (!folder.exists()) {
+			folder.mkdir();
+		}
+
+		if (ServletFileUpload.isMultipartContent(req)) {
+			DiskFileItemFactory fileFactory = new DiskFileItemFactory();
+			fileFactory.setRepository(folder);
+			ServletFileUpload upload = new ServletFileUpload(fileFactory);
+
+			try {
+				List<FileItem> fileItemsList = upload.parseRequest(req);
+				Iterator<FileItem> fileItemsIterator = fileItemsList.iterator();
+
+				while (fileItemsIterator.hasNext()) {
+					FileItem item = fileItemsIterator.next();
+					if (item.isFormField()) {
+						// get name email password here
+
+						if (item.getFieldName().equals("name")) {
+							name = item.getString();
+						}
+
+						if (item.getFieldName().equals("price")) {
+							price = item.getString();
+						}
+
+						if (item.getFieldName().equals("quantity")) {
+							quantity = item.getString();
+						}
+						if (item.getFieldName().equals("category")) {
+							category = item.getString();
+						}
+						if (item.getFieldName().equals("date")) {
+							date = item.getString();
+						}
+						if (item.getFieldName().equals("imagename")) {
+							imagename = item.getString();
+						}
+						if (item.getFieldName().equals("productid")) {
+							productid = item.getString();
+						}
+					} else {
+						if (item.getSize() > 0) {
+							try {
+								String[] images = imagename.split("/");
+								File file = new File(folder + File.separator + images[1]);
+								if (file.exists()) {
+									file.delete();
+								}
+								item.write(file);
+							} catch (Exception e) {
+								System.out.println(e);
+							}
+						}
+					}
+				}
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+
+			String t[] = imagename.split("/");
+			System.out.println(name + quantity + category + price + date + t[1]);
+			System.out.println(folder.getAbsolutePath());
+
+			Product product=ProductDao.getProductDao().getProductById(productid);
+			product.setName(name);
+			product.setCategory(category);
+			product.setQuantity(Integer.parseInt(quantity));
+			product.setPrice(Float.parseFloat(price));
+			product.setDate(date);
+			
+			int i=ProductDao.getProductDao().updateProduct(product);
+			String msg=(i>0)?"Successfully Product update":"Proiduct updation Failed";
+			resp.getWriter().print(msg);
+
+		}
+
+	}
+
 	private void getAllProducts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		getProducts(req, resp);
 		resp.sendRedirect("productlist.jsp");
 	}
-	
+
 	private void getProducts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Product> listproducts = ProductDao.getProductDao().getAllProducts();
 		req.getSession(false).setAttribute("products", listproducts);
-	} 
+	}
 
 	private void addProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String name = "", quantity = "", price = "", date = "", category = "";
 
-		String rootlocation = req.getServletContext().getRealPath("/");
+		String rootlocation=req.getServletContext().getRealPath("/");
 		File folder = new File(rootlocation, "products");
 		if (!folder.exists()) {
 			folder.mkdir();
@@ -142,16 +226,25 @@ public class ProductController extends HttpServlet {
 
 		}
 	}
-	
+
 	private void deleteProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String id=req.getParameter("id");
-		int i=ProductDao.getProductDao().deleteProduct(id);
-		if(i>0) {
+		String id = req.getParameter("id");
+		Product product=ProductDao.getProductDao().getProductById(id);
+		int i = ProductDao.getProductDao().deleteProduct(id);
+		if (i > 0) {
 			getProducts(req, resp);
+			String rootlocation=req.getServletContext().getRealPath("/");
+			File folder=new File(rootlocation+File.separator+"products"+File.separator+product.getMainimage());
+			System.out.println(folder.getAbsolutePath());
+			if(folder.exists()) {
+				folder.delete();
+			}
 			resp.getWriter().print("Successfully Deleted.");
-		}else {
+		} else {
 			resp.getWriter().print("Deleted Failed.");
 		}
 	}
+
+	
 
 }

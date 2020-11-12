@@ -70,5 +70,44 @@ public class ProductDao {
 		return i;
 	}
 
+	public int updateProduct(Product product) {
+		int i = 0;
+		try (Connection con = Dao.getConnection();) {
+			PreparedStatement ps = con.prepareStatement("update product set name=?,category=?,quantity=?,price=?,date=? where id=?");
+			ps.setString(1, product.getName());
+			ps.setString(2, product.getCategory());
+			ps.setInt(3, product.getQuantity());
+			ps.setFloat(4, product.getPrice());
+			ps.setString(5, product.getDate());
+			ps.setInt(6, product.getId());
+			i = ps.executeUpdate();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return i;
+	}
+	
+	public Product getProductById(String id) {
+		Product product = null;
+		try (Connection con = Dao.getConnection();) {
+			PreparedStatement ps = con.prepareStatement("select * from product where id=?");
+			ps.setInt(1,Integer.parseInt(id));
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				product = new Product();
+				product.setId(rs.getInt(1));
+				product.setName(rs.getString(2));
+				product.setCategory(rs.getString(3));
+				product.setQuantity(rs.getInt(4));
+				product.setPrice(rs.getFloat(5));
+				product.setDate(rs.getString(6));
+				product.setMainimage(rs.getString(7));
+				
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return product;
+	}
 
 }
