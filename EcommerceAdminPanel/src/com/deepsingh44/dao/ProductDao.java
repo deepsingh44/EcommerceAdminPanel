@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.deepsingh44.model.Product;
 
@@ -57,7 +59,7 @@ public class ProductDao {
 		}
 		return listProducts;
 	}
-	
+
 	public int deleteProduct(String id) {
 		int i = 0;
 		try (Connection con = Dao.getConnection();) {
@@ -73,7 +75,8 @@ public class ProductDao {
 	public int updateProduct(Product product) {
 		int i = 0;
 		try (Connection con = Dao.getConnection();) {
-			PreparedStatement ps = con.prepareStatement("update product set name=?,category=?,quantity=?,price=?,date=? where id=?");
+			PreparedStatement ps = con
+					.prepareStatement("update product set name=?,category=?,quantity=?,price=?,date=? where id=?");
 			ps.setString(1, product.getName());
 			ps.setString(2, product.getCategory());
 			ps.setInt(3, product.getQuantity());
@@ -86,12 +89,12 @@ public class ProductDao {
 		}
 		return i;
 	}
-	
+
 	public Product getProductById(String id) {
 		Product product = null;
 		try (Connection con = Dao.getConnection();) {
 			PreparedStatement ps = con.prepareStatement("select * from product where id=?");
-			ps.setInt(1,Integer.parseInt(id));
+			ps.setInt(1, Integer.parseInt(id));
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				product = new Product();
@@ -102,12 +105,63 @@ public class ProductDao {
 				product.setPrice(rs.getFloat(5));
 				product.setDate(rs.getString(6));
 				product.setMainimage(rs.getString(7));
-				
+
 			}
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return product;
+	}
+
+	public Map<String, List<Product>> getMapProducts() {
+		Map<String, List<Product>> maps = new HashMap<>();
+		List<Product> mens = new ArrayList<>();
+		List<Product> womens = new ArrayList<>();
+		List<Product> homes = new ArrayList<>();
+
+		try (Connection con = Dao.getConnection();) {
+			PreparedStatement ps = con.prepareStatement("select * from product");
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				if (rs.getString(3).equalsIgnoreCase("men")) {
+					Product pmen = new Product();
+					pmen.setId(rs.getInt(1));
+					pmen.setName(rs.getString(2));
+					pmen.setCategory(rs.getString(3));
+					pmen.setQuantity(rs.getInt(4));
+					pmen.setPrice(rs.getFloat(5));
+					pmen.setDate(rs.getString(6));
+					pmen.setMainimage(rs.getString(7));
+					mens.add(pmen);
+				} else if (rs.getString(3).equalsIgnoreCase("women")) {
+					Product pwomen = new Product();
+					pwomen.setId(rs.getInt(1));
+					pwomen.setName(rs.getString(2));
+					pwomen.setCategory(rs.getString(3));
+					pwomen.setQuantity(rs.getInt(4));
+					pwomen.setPrice(rs.getFloat(5));
+					pwomen.setDate(rs.getString(6));
+					pwomen.setMainimage(rs.getString(7));
+					womens.add(pwomen);
+				} else if (rs.getString(3).equalsIgnoreCase("home")) {
+					Product home = new Product();
+					home.setId(rs.getInt(1));
+					home.setName(rs.getString(2));
+					home.setCategory(rs.getString(3));
+					home.setQuantity(rs.getInt(4));
+					home.setPrice(rs.getFloat(5));
+					home.setDate(rs.getString(6));
+					home.setMainimage(rs.getString(7));
+					homes.add(home);
+				}
+			}
+			maps.put("men", mens);
+			maps.put("women", womens);
+			maps.put("home", homes);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return maps;
 	}
 
 }
